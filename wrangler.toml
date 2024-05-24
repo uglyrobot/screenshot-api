@@ -1,14 +1,14 @@
-name = "browser-worker"
+name = "docsbot-screenshot"
 main = "src/index.ts"
 compatibility_date = "2023-03-14"
 node_compat = true
 workers_dev = true
 
 
-browser = { binding = "mybrowser", type = "browser" }
+browser = { binding = "mybrowser" }
 r2_buckets  = [
-  { binding = "puppeteer", bucket_name = "puppeteer"}
+  { binding = "puppeteer", bucket_name = "docsbot"}
 ]
 
 [vars]
-bucketUrl = "https://pub-example.r2.dev"
+bucketUrl = "https://cdn.docsbot.com"
