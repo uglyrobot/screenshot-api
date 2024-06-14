@@ -18,7 +18,25 @@ export default {
       const browser = await puppeteer.launch(env.mybrowser)
       const page = await browser.newPage()
       await page.setViewport({ width: 1280, height: 960 })
-      await page.goto(url)
+      await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36');
+      try {
+        const response = await page.goto(url)
+        if (response.status() !== 200) {
+          await browser.close()
+          return new Response(JSON.stringify({ error: 'Failed to load the page, got a ' + response.status() + ' response.' }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' },
+          })
+        }
+      }
+      catch (error) {
+        await browser.close()
+        return new Response(JSON.stringify({ error: 'Failed to load the page, got a ' + error + ' response.' }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      }
+      
       await page.waitForFunction('document.readyState === "complete"')
       img = (await page.screenshot({ fullPage: true, type: 'jpeg', quality: 80 })) as Buffer
       const title = sanitize(await page.title(), { replacement: '-' }).replace(/\s+/g, '-')
